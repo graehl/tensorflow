@@ -651,12 +651,14 @@ class DropoutWrapper(RNNCell):
       if (not isinstance(self._input_keep_prob, numbers.Real) or
           self._input_keep_prob < 1.0):
         if input_size is None:
-          raise ValueError(
+          logging.debug(
               "When variational_recurrent=True and input_keep_prob < 1.0 or "
-              "is unknown, input_size must be provided")
-        self._recurrent_input_noise = _enumerated_map_structure(
-            lambda i, s: batch_noise(s, inner_seed=self._gen_seed("input", i)),
-            input_size)
+              "is unknown, input_size should be provided. Since it wasn't, "
+              "using non-variational input dropout")
+        else:
+          self._recurrent_input_noise = _enumerated_map_structure(
+              lambda i, s: batch_noise(s, inner_seed=self._gen_seed("input", i)),
+              input_size)
       self._recurrent_state_noise = _enumerated_map_structure(
           lambda i, s: batch_noise(s, inner_seed=self._gen_seed("state", i)),
           cell.state_size)
