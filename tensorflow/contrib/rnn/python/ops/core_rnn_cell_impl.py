@@ -699,7 +699,7 @@ class DropoutWrapper(RNNCell):
 
   def _dropout(self, values, salt_prefix, recurrent_noise, keep_prob):
     """Decides whether to perform standard dropout or recurrent dropout."""
-    if not self._variational_recurrent:
+    if recurrent_noise is None:
       def dropout(i, v):
         return nn_ops.dropout(
             v, keep_prob=keep_prob, seed=self._gen_seed(salt_prefix, i))
